@@ -3,6 +3,7 @@ package com.example.starter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 import io.vertx.ext.web.Router;
@@ -14,21 +15,21 @@ import io.vertx.sqlclient.PoolOptions;
 public class MainVerticle extends AbstractVerticle {
 
   private static final int HTTP_PORT = Integer.parseInt(System.getenv().getOrDefault("HTTP_PORT", "8080"));
-  private static final String HOST = System.getenv().getOrDefault("HOST", "localhost");
-  private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "1433"));
-  private static final String DB = System.getenv().getOrDefault("DB", "vertx");
-  private static final String USER = System.getenv().getOrDefault("USER", "vertx");
-  private static final String PASSWORD = System.getenv().getOrDefault("PASSWORD", "vertx");
+  private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
+  private static final int DB_PORT = Integer.parseInt(System.getenv().getOrDefault("DB_PORT", "1433"));
+  private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "vertx");
+  private static final String DB_USER = System.getenv().getOrDefault("DB_USER", "vertx");
+  private static final String DB_PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "vertx");
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
 
     MSSQLConnectOptions connectOptions = new MSSQLConnectOptions()
-      .setHost(HOST)
-      .setPort(PORT)
-      .setDatabase(DB)
-      .setUser(USER)
-      .setPassword(PASSWORD);
+      .setHost(DB_HOST)
+      .setPort(DB_PORT)
+      .setDatabase(DB_NAME)
+      .setUser(DB_USER)
+      .setPassword(DB_PASSWORD);
 
     PoolOptions poolOptions = new PoolOptions()
       .setMaxSize(5);
