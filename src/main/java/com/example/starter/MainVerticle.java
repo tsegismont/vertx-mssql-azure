@@ -13,8 +13,9 @@ import io.vertx.sqlclient.PoolOptions;
 
 public class MainVerticle extends AbstractVerticle {
 
+  private static final int HTTP_PORT = Integer.parseInt(System.getenv().getOrDefault("HTTP_PORT", "8080"));
   private static final String HOST = System.getenv().getOrDefault("HOST", "localhost");
-  private static final Integer PORT = Integer.valueOf(System.getenv().getOrDefault("PORT", "1433"));
+  private static final int PORT = Integer.parseInt(System.getenv().getOrDefault("PORT", "1433"));
   private static final String DB = System.getenv().getOrDefault("DB", "vertx");
   private static final String USER = System.getenv().getOrDefault("USER", "vertx");
   private static final String PASSWORD = System.getenv().getOrDefault("PASSWORD", "vertx");
@@ -55,7 +56,7 @@ public class MainVerticle extends AbstractVerticle {
 
 
     vertx.createHttpServer().requestHandler(router)
-      .listen(8080)
+      .listen(HTTP_PORT)
       .<Void>mapEmpty()
       .onComplete(startPromise);
   }
