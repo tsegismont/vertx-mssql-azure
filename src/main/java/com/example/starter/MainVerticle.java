@@ -1,7 +1,10 @@
 package com.example.starter;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.ext.healthchecks.Status;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.ErrorHandler;
 import io.vertx.mssqlclient.MSSQLConnectOptions;
@@ -33,8 +36,20 @@ public class MainVerticle extends AbstractVerticle {
 
     Router router = Router.router(vertx);
 
-    router.get()
-      .respond(rc -> client.query("SELECT 1 ").execute().map("OK"));
+    router.get("/").respond(rc -> Future.succeededFuture("<!doctype html>\n" +
+      "<html lang=\"en\">\n" +
+      "  <head>\n" +
+      "    <meta charset=\"UTF-8\" />\n" +
+      "    <title>Hello World!</title>\n" +
+      "  </head>\n" +
+      "  <body>Hello World!</body>\n" +
+      "</html>\n"));
+
+    router.get("/test").respond(rc -> client.query("SELECT 1 ").execute().map("OK"));
+
+    HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
+    healthCheckHandler.register("my-procedure-name", promise -> promise.complete(Status.OK()));
+    router.get("/health*").handler(healthCheckHandler);
 
     router.route().failureHandler(ErrorHandler.create(vertx, true));
 
