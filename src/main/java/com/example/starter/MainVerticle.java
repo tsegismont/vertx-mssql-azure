@@ -47,6 +47,12 @@ public class MainVerticle extends AbstractVerticle {
       "  <body>Hello World!</body>\n" +
       "</html>\n"));
 
+    router.get("/config").respond(rc -> {
+      JsonObject json = connectOptions.toJson();
+      json.remove("password");
+      return Future.succeededFuture(json);
+    });
+
     router.get("/test").respond(rc -> client.query("SELECT 1 ").execute().map("OK"));
 
     HealthCheckHandler healthCheckHandler = HealthCheckHandler.create(vertx);
